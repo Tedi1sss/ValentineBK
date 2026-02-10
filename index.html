@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💖</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(255, 0, 120, 0.3);
+}
+
+h1 {
+  color: #ff4d8d;
+  margin-bottom: 25px;
+}
+
+button {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.yes {
+  background: #ff4d8d;
+  color: white;
+}
+
+.no {
+  background: #eee;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+}
+
+.result-box {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>Bryten Kendrick, do you want to be my Valentine? 💖</h1>
+  <button class="yes" onclick="showResult('YES 🥳')">Yes 💘</button>
+  <button class="no" onclick="showResult('NO 😭')">No 🙈</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="result-box">
+    <h2 id="resultText"></h2>
+    <p>Please screenshot your answer 📸</p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+function showResult(answer) {
+  document.getElementById("resultText").innerText = "She said " + answer;
+  document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
