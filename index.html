@@ -17,16 +17,36 @@ body {
   background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
 }
 
+/* Floating hearts */
+.float {
+  position: fixed;
+  bottom: -50px;
+  font-size: 22px;
+  animation: rise linear infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+@keyframes rise {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+
 .card {
   background: white;
   padding: 40px;
   border-radius: 25px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(255, 0, 120, 0.3);
-  position: relative;
-  z-index: 2;
   width: 90%;
   max-width: 500px;
+  position: relative;
+  z-index: 2;
+  animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 20px rgba(255, 0, 120, 0.3); }
+  to { box-shadow: 0 0 40px rgba(255, 0, 120, 0.6); }
 }
 
 h1 {
@@ -77,6 +97,7 @@ button {
   width: 100%;
   border-radius: 15px;
   margin-top: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 canvas {
@@ -95,7 +116,7 @@ canvas {
 <div class="card">
   <h1 id="mainTitle">Bryten Kendrick, do you want to be my Valentine? 💖</h1>
 
-  <button class="yes" onclick="yesClicked()">Yes 💘</button>
+  <button class="yes" id="yesBtn" onclick="yesClicked()">Yes 💘</button>
   <button class="no" id="noBtn">No 🙈</button>
 </div>
 
@@ -103,25 +124,43 @@ canvas {
   <div class="result-box">
     <h2>She said YES 🥳💖</h2>
     <p>Please screenshot your answer 📸</p>
-    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80">
+
+    <!-- CUTER PUPPY -->
+    <img src="https://images.unsplash.com/photo-1601758173925-1b8f5e7a1e58?auto=format&fit=crop&w=800&q=80">
+
     <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
 
+/* Floating hearts */
+function createFloat() {
+  const el = document.createElement("div");
+  el.className = "float";
+  el.innerText = ["💖","💘","💕","💞","🌸"][Math.floor(Math.random()*5)];
+  el.style.left = Math.random()*100 + "vw";
+  el.style.animationDuration = (5 + Math.random()*5) + "s";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),10000);
+}
+setInterval(createFloat,500);
+
 /* NO button impossible mode */
 const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
 
 function moveNoButton() {
   const card = document.querySelector(".card");
-  const cardRect = card.getBoundingClientRect();
-  
-  const maxX = cardRect.width - 100;
-  const maxY = cardRect.height - 60;
+  const rect = card.getBoundingClientRect();
+  const maxX = rect.width - 100;
+  const maxY = rect.height - 60;
 
-  noBtn.style.left = Math.random() * maxX + "px";
-  noBtn.style.top = Math.random() * maxY + "px";
+  noBtn.style.left = Math.random()*maxX + "px";
+  noBtn.style.top = Math.random()*maxY + "px";
+
+  // make YES button slightly bigger each time
+  yesBtn.style.transform = "scale(" + (1.05 + Math.random()*0.1) + ")";
 }
 
 noBtn.addEventListener("mouseover", moveNoButton);
@@ -132,7 +171,7 @@ noBtn.addEventListener("touchstart", function(e){
     "SIKE 😈 No no nooo hahaha";
 });
 
-/* YES button */
+/* YES click */
 function yesClicked() {
   document.getElementById("mainTitle").innerText =
     "Nice try Speky 😈 You just got spekier";
@@ -144,7 +183,7 @@ function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
-/* Simple confetti */
+/* Confetti */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -153,13 +192,13 @@ canvas.height = window.innerHeight;
 let pieces = [];
 
 function fireworkBurst() {
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 200; i++) {
     pieces.push({
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      vx: (Math.random() - 0.5) * 8,
-      vy: (Math.random() - 0.5) * 8,
-      size: Math.random() * 5 + 2,
+      x: canvas.width/2,
+      y: canvas.height/2,
+      vx: (Math.random()-0.5)*10,
+      vy: (Math.random()-0.5)*10,
+      size: Math.random()*6+2,
       life: 100
     });
   }
@@ -167,21 +206,21 @@ function fireworkBurst() {
 
 function update() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  pieces.forEach((p, i) => {
+  pieces.forEach((p,i)=>{
     p.x += p.vx;
     p.y += p.vy;
-    p.vy += 0.05;
+    p.vy += 0.08;
     p.life--;
     ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
-    ctx.fillRect(p.x, p.y, p.size, p.size);
-    if (p.life <= 0) pieces.splice(i,1);
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+    if(p.life<=0) pieces.splice(i,1);
   });
   requestAnimationFrame(update);
 }
-
 update();
 
 </script>
 
 </body>
 </html>
+
