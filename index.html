@@ -9,19 +9,24 @@
 body {
   margin: 0;
   height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
   font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
 }
 
 .card {
   background: white;
   padding: 40px;
-  border-radius: 20px;
+  border-radius: 25px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(255, 0, 120, 0.3);
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 500px;
 }
 
 h1 {
@@ -30,13 +35,14 @@ h1 {
 }
 
 button {
-  padding: 12px 20px;
+  padding: 12px 22px;
   margin: 10px;
   border: none;
   border-radius: 30px;
   font-size: 16px;
   cursor: pointer;
   transition: 0.2s;
+  position: relative;
 }
 
 .yes {
@@ -46,10 +52,7 @@ button {
 
 .no {
   background: #eee;
-}
-
-button:hover {
-  transform: scale(1.1);
+  position: absolute;
 }
 
 .modal {
@@ -58,43 +61,126 @@ button:hover {
   display: none;
   justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
+  z-index: 3;
 }
 
 .result-box {
   background: white;
   padding: 30px;
-  border-radius: 20px;
+  border-radius: 25px;
   text-align: center;
+  max-width: 350px;
+}
+
+.result-box img {
+  width: 100%;
+  border-radius: 15px;
+  margin-top: 15px;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="confetti"></canvas>
+
 <div class="card">
-  <h1>Bryten Kendrick, do you want to be my Valentine? 💖</h1>
-  <button class="yes" onclick="showResult('YES 🥳')">Yes 💘</button>
-  <button class="no" onclick="showResult('NO 😭')">No 🙈</button>
+  <h1 id="mainTitle">Bryten Kendrick, do you want to be my Valentine? 💖</h1>
+
+  <button class="yes" onclick="yesClicked()">Yes 💘</button>
+  <button class="no" id="noBtn">No 🙈</button>
 </div>
 
 <div class="modal" id="modal">
   <div class="result-box">
-    <h2 id="resultText"></h2>
+    <h2>She said YES 🥳💖</h2>
     <p>Please screenshot your answer 📸</p>
+    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80">
     <button onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
-function showResult(answer) {
-  document.getElementById("resultText").innerText = "She said " + answer;
+
+/* NO button impossible mode */
+const noBtn = document.getElementById("noBtn");
+
+function moveNoButton() {
+  const card = document.querySelector(".card");
+  const cardRect = card.getBoundingClientRect();
+  
+  const maxX = cardRect.width - 100;
+  const maxY = cardRect.height - 60;
+
+  noBtn.style.left = Math.random() * maxX + "px";
+  noBtn.style.top = Math.random() * maxY + "px";
+}
+
+noBtn.addEventListener("mouseover", moveNoButton);
+noBtn.addEventListener("touchstart", function(e){
+  e.preventDefault();
+  moveNoButton();
+  document.getElementById("mainTitle").innerText =
+    "SIKE 😈 No no nooo hahaha";
+});
+
+/* YES button */
+function yesClicked() {
+  document.getElementById("mainTitle").innerText =
+    "Nice try Speky 😈 You just got spekier";
   document.getElementById("modal").style.display = "flex";
+  fireworkBurst();
 }
 
 function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
+
+/* Simple confetti */
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let pieces = [];
+
+function fireworkBurst() {
+  for (let i = 0; i < 150; i++) {
+    pieces.push({
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      vx: (Math.random() - 0.5) * 8,
+      vy: (Math.random() - 0.5) * 8,
+      size: Math.random() * 5 + 2,
+      life: 100
+    });
+  }
+}
+
+function update() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pieces.forEach((p, i) => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.05;
+    p.life--;
+    ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+    if (p.life <= 0) pieces.splice(i,1);
+  });
+  requestAnimationFrame(update);
+}
+
+update();
+
 </script>
 
 </body>
