@@ -1,226 +1,227 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Valentine 💖</title>
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
-}
+  :root{
+    --pink:#ff4d8d;
+    --bg1:#ffb6c1;
+    --bg2:#ffd1dc;
+    --text:#3a1b2b;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    padding: 18px;
+  }
 
-/* Floating hearts */
-.float {
-  position: fixed;
-  bottom: -50px;
-  font-size: 22px;
-  animation: rise linear infinite;
-  opacity: 0.8;
-  pointer-events: none;
-}
-@keyframes rise {
-  from { transform: translateY(0); }
-  to { transform: translateY(-120vh); }
-}
+  /* floating hearts/flowers */
+  .float{
+    position: fixed;
+    bottom: -60px;
+    font-size: 22px;
+    opacity: .85;
+    pointer-events:none;
+    animation: rise linear infinite;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.08));
+    z-index: 0;
+  }
+  @keyframes rise{
+    from{ transform: translateY(0) rotate(0deg); opacity:0; }
+    12%{ opacity:.95; }
+    to{ transform: translateY(-120vh) rotate(22deg); opacity:0; }
+  }
 
-.card {
-  background: white;
-  padding: 40px;
-  border-radius: 25px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(255, 0, 120, 0.3);
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-  z-index: 2;
-  animation: glow 3s infinite alternate;
-}
+  canvas{
+    position: fixed;
+    inset: 0;
+    pointer-events:none;
+    z-index: 1;
+  }
 
-@keyframes glow {
-  from { box-shadow: 0 0 20px rgba(255, 0, 120, 0.3); }
-  to { box-shadow: 0 0 40px rgba(255, 0, 120, 0.6); }
-}
+  .card{
+    width: min(700px, 100%);
+    background: rgba(255,255,255,.92);
+    border-radius: 26px;
+    padding: 22px 16px;
+    text-align:center;
+    box-shadow: 0 20px 50px rgba(255,0,120,.25);
+    position:relative;
+    z-index: 2;
+    animation: glow 2.8s infinite alternate;
+  }
+  @keyframes glow{
+    from{ box-shadow: 0 16px 45px rgba(255,0,120,.22); }
+    to{ box-shadow: 0 22px 70px rgba(255,0,120,.38); }
+  }
 
-h1 {
-  color: #ff4d8d;
-  margin-bottom: 25px;
-}
+  h1{
+    margin: 0 0 8px;
+    color: var(--pink);
+    font-size: clamp(22px, 5.2vw, 36px);
+    line-height: 1.15;
+  }
+  .countdown{
+    font-weight: 900;
+    color: var(--text);
+    opacity: .9;
+    margin: 6px 0 10px;
+    font-size: 15px;
+  }
+  .tiny{
+    margin-top: 10px;
+    font-size: 12.5px;
+    opacity: .82;
+  }
 
-button {
-  padding: 12px 22px;
-  margin: 10px;
-  border: none;
-  border-radius: 30px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.2s;
-  position: relative;
-}
+  .btnRow{
+    display:flex;
+    gap: 10px;
+    justify-content:center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    position: relative;
+    min-height: 60px;
+  }
 
-.yes {
-  background: #ff4d8d;
-  color: white;
-}
+  button{
+    border:0;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor:pointer;
+    transition: transform .12s ease;
+    min-width: 150px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active{ transform: scale(.98); }
 
-.no {
-  background: #eee;
-  position: absolute;
-}
+  .yes{
+    background: linear-gradient(135deg, #ff4d8d, #ff7ab3);
+    color:#fff;
+    box-shadow: 0 14px 25px rgba(255,77,141,.35);
+  }
 
-.modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0,0,0,0.5);
-  z-index: 3;
-}
+  .no{
+    background: rgba(0,0,0,.07);
+    color:#333;
+    border: 1px solid rgba(0,0,0,.08);
+    position: absolute; /* we will move it around inside btnRow */
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
 
-.result-box {
-  background: white;
-  padding: 30px;
-  border-radius: 25px;
-  text-align: center;
-  max-width: 350px;
-}
+  .shake{ animation: shake .45s; }
+  @keyframes shake{
+    0%{ transform: translateX(-50%) translateX(0); }
+    25%{ transform: translateX(-50%) translateX(-8px); }
+    50%{ transform: translateX(-50%) translateX(8px); }
+    75%{ transform: translateX(-50%) translateX(-8px); }
+    100%{ transform: translateX(-50%) translateX(0); }
+  }
 
-.result-box img {
-  width: 100%;
-  border-radius: 15px;
-  margin-top: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+  .controlRow{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top: 10px;
+  }
+  .ghost{
+    background: rgba(255,77,141,.12);
+    color: var(--pink);
+    border: 1px solid rgba(255,77,141,.25);
+    min-width: 170px;
+  }
 
-canvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
+  /* modal */
+  .modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding: 18px;
+    z-index: 10;
+  }
+
+  .box{
+    width: min(520px, 100%);
+    background: #fff;
+    border-radius: 22px;
+    padding: 16px;
+    text-align:center;
+    box-shadow: 0 22px 70px rgba(0,0,0,.35);
+  }
+
+  .result{
+    font-size: 22px;
+    font-weight: 1000;
+    color: var(--pink);
+    margin: 8px 0 6px;
+  }
+  .sub{
+    margin: 0 0 12px;
+    opacity: .85;
+  }
+
+  img{
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-top: 10px;
+    box-shadow: 0 12px 26px rgba(0,0,0,.18);
+  }
+
+  .smallBtns{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top: 14px;
+  }
 </style>
 </head>
 
 <body>
-
-<canvas id="confetti"></canvas>
+<canvas id="fx"></canvas>
 
 <div class="card">
   <h1 id="mainTitle">Bryten Kendrick, do you want to be my Valentine? 💖</h1>
+  <div class="countdown" id="countdown">Choose in <span id="sec">5</span>… 😈</div>
 
-  <button class="yes" id="yesBtn" onclick="yesClicked()">Yes 💘</button>
-  <button class="no" id="noBtn">No 🙈</button>
-</div>
+  <div class="btnRow" id="btnArea">
+    <button class="yes" id="yesBtn">Yes 💘</button>
+    <button class="no" id="noBtn">No 🙈</button>
+  </div>
 
-<div class="modal" id="modal">
-  <div class="result-box">
-    <h2>She said YES 🥳💖</h2>
-    <p>Please screenshot your answer 📸</p>
+  <div class="controlRow">
+    <button class="ghost" id="musicBtn">Start music 🎵</button>
+  </div>
 
-    <!-- CUTER PUPPY -->
-    <img src="https://images.unsplash.com/photo-1601758173925-1b8f5e7a1e58?auto=format&fit=crop&w=800&q=80">
-
-    <button onclick="closeModal()">Close</button>
+  <div class="tiny">
+    On phones, sound starts only after a tap (normal). No button is… suspiciously hard to press.
   </div>
 </div>
 
-<script>
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="result" id="resultText">She said YES 🥳💖</div>
+    <p class="sub">Please screenshot your answer 📸</p>
 
-/* Floating hearts */
-function createFloat() {
-  const el = document.createElement("div");
-  el.className = "float";
-  el.innerText = ["💖","💘","💕","💞","🌸"][Math.floor(Math.random()*5)];
-  el.style.left = Math.random()*100 + "vw";
-  el.style.animationDuration = (5 + Math.random()*5) + "s";
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),10000);
-}
-setInterval(createFloat,500);
-
-/* NO button impossible mode */
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
-
-function moveNoButton() {
-  const card = document.querySelector(".card");
-  const rect = card.getBoundingClientRect();
-  const maxX = rect.width - 100;
-  const maxY = rect.height - 60;
-
-  noBtn.style.left = Math.random()*maxX + "px";
-  noBtn.style.top = Math.random()*maxY + "px";
-
-  // make YES button slightly bigger each time
-  yesBtn.style.transform = "scale(" + (1.05 + Math.random()*0.1) + ")";
-}
-
-noBtn.addEventListener("mouseover", moveNoButton);
-noBtn.addEventListener("touchstart", function(e){
-  e.preventDefault();
-  moveNoButton();
-  document.getElementById("mainTitle").innerText =
-    "SIKE 😈 No no nooo hahaha";
-});
-
-/* YES click */
-function yesClicked() {
-  document.getElementById("mainTitle").innerText =
-    "Nice try Speky 😈 You just got spekier";
-  document.getElementById("modal").style.display = "flex";
-  fireworkBurst();
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-/* Confetti */
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let pieces = [];
-
-function fireworkBurst() {
-  for (let i = 0; i < 200; i++) {
-    pieces.push({
-      x: canvas.width/2,
-      y: canvas.height/2,
-      vx: (Math.random()-0.5)*10,
-      vy: (Math.random()-0.5)*10,
-      size: Math.random()*6+2,
-      life: 100
-    });
-  }
-}
-
-function update() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  pieces.forEach((p,i)=>{
-    p.x += p.vx;
-    p.y += p.vy;
-    p.vy += 0.08;
-    p.life--;
-    ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
-    ctx.fillRect(p.x,p.y,p.size,p.size);
-    if(p.life<=0) pieces.splice(i,1);
-  });
-  requestAnimationFrame(update);
-}
-update();
-
-</script>
-
-</body>
-</html>
+    <img id="puppy" a
 
